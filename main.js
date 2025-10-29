@@ -7,6 +7,39 @@ const product = [
     { name: "ชั้นวางของ", price: "$35", images: ["shelf.jpg", "shelf.jpg", "shelf.jpg"], description: "ชั้นวางของไม้สีอ่อน", link: "#" }
 ];
 
+const ImgSlides = [
+  {
+    image: "https://i.pinimg.com/1200x/10/1e/ca/101ecada1c213b0e1c79e9575123c7ad.jpg",
+    author: "Kikaa",
+    link: "https://www.pinterest.com/pin/1548181176260370/"
+  },
+  {
+    image: "https://i.pinimg.com/736x/16/19/f8/1619f8fdeddcf8564a10b89be94fcce8.jpg",
+    author: "Adrian",
+    link: "https://www.pinterest.com/pin/1759287348493727/"
+  },
+  {
+    image: "https://i.pinimg.com/736x/79/e6/6b/79e66b9eff920c482f319886b89ee38a.jpg",
+    author: "Gabriella Decor",
+    link: "https://www.pinterest.com/pin/14636767535562839/"
+  },
+  {
+    image: "https://i.pinimg.com/736x/97/ba/04/97ba0458d5809f8d0cb733fee449ea88.jpg",
+    author: "Michael Parker",
+    link: "https://www.pinterest.com/pin/26740191531816616/"
+  },
+  {
+    image: "https://i.pinimg.com/736x/3b/fb/98/3bfb98119a67d043f33197842e15785d.jpg",
+    author: "javius02",
+    link: "https://www.pinterest.com/pin/1055599907917086/"
+  },
+  {
+    image: "https://i.pinimg.com/1200x/a4/0c/d6/a40cd6f528bb40b93870767ff74e866d.jpg",
+    author: "Miracle Keeling",
+    link: "https://www.pinterest.com/pin/38562140558926267/"
+  },
+]; 
+
 function displayRandomProducts(num = 3) {
     const container = document.getElementById('product-container');
 
@@ -64,3 +97,24 @@ btn_random.addEventListener('click', () => {
     displayRandomProducts(3);
 })
 
+
+let ImgCurrentIndex = 0;
+
+function changeSlide() {
+  const headerImg = document.getElementById("header-img");
+  const imgForm = document.getElementById("img-form");
+
+  const currentSlide = ImgSlides[ImgCurrentIndex];
+  headerImg.src = currentSlide.image;
+  imgForm.innerHTML = `Image from Pinterest by ${currentSlide.author}
+  <a href="${currentSlide.link}" id="img-link" target="_blank">Visit</a>`;
+
+
+  ImgCurrentIndex = (ImgCurrentIndex + 1) % ImgSlides.length;
+}
+
+
+changeSlide();
+
+
+setInterval(changeSlide, 5000);
