@@ -1,0 +1,14 @@
+[
+  {
+    "name": "โคมไฟวินเทจ",
+    "price": "$25",
+    "image": "lamp.jpg",
+    "link": "#"
+  },
+  {
+    "name": "โต๊ะข้างเตียง",
+    "price": "$45",
+    "image": "table.jpg",
+    "link": "#"
+  }
+]
