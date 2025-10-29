@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
-    background: linear-gradient(135deg, #e8d5c4 0%, #d4b5a0 50%, #c9a68a 100%);
+    background: linear-gradient(135deg, #8b7355 0%, #6b5545 50%, #4a3f35 100%);
     background-attachment: fixed;
     padding: 20px;
     position: relative;
@@ -42,40 +42,40 @@ header img {
     border: 6px solid #8b6f47;
     border-radius: 20px;
     box-shadow: 
-        0 10px 30px rgba(139, 111, 71, 0.3),
-        0 5px 15px rgba(0, 0, 0, 0.2);
+        0 10px 30px rgba(139, 111, 71, 0.5),
+        0 5px 15px rgba(0, 0, 0, 0.4);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
-    animation: fadeIn 0.8s ease-in-out forwards;
+    animation: slideInFromRight 1s ease-out forwards;
 }
 
-@keyframes fadeIn {
+@keyframes slideInFromRight {
     from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: translateX(100px);
     }
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateX(0);
     }
 }
 
 header img:hover {
     transform: scale(1.02);
     box-shadow: 
-        0 15px 40px rgba(139, 111, 71, 0.4),
-        0 8px 20px rgba(0, 0, 0, 0.3);
+        0 15px 40px rgba(139, 111, 71, 0.6),
+        0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
 #img-form {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     display: inline-block;
     padding: 12px 24px;
     border: 4px solid #8b6f47;
     border-radius: 15px;
     margin-top: 30px;
     font-weight: bold;
-    box-shadow: 0 5px 15px rgba(139, 111, 71, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     color: #6b5540;
     transition: all 0.3s ease;
 }
@@ -83,7 +83,7 @@ header img:hover {
 #img-form:hover {
     background: rgba(255, 255, 255, 1);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(139, 111, 71, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
 #img-form a {
@@ -102,28 +102,44 @@ header img:hover {
     background: #d4a574;
     color: #fff;
     transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(139, 111, 71, 0.3);
+    box-shadow: 0 4px 10px rgba(139, 111, 71, 0.5);
 }
 
 #filter {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
+    max-width: 600px;
+    margin: 0 auto 30px;
     position: relative;
     z-index: 2;
 }
 
-#price {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    border: 4px solid #8b6f47;
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(139, 111, 71, 0.2);
-    display: flex;
-    gap: 15px;
+#filter h5 {
+    text-align: center;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-#price input {
+#price {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border: 4px solid #8b6f47;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+#filter-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6b5540;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#price input[type="number"] {
+    width: 48%;
     padding: 12px 20px;
     border: 3px solid #d4a574;
     border-radius: 12px;
@@ -132,18 +148,101 @@ header img:hover {
     background: #fefefe;
     transition: all 0.3s ease;
     color: #6b5540;
+    margin-bottom: 15px;
 }
 
-#price input:focus {
+#price input[type="number"]:first-of-type {
+    margin-right: 4%;
+}
+
+#price input[type="number"]:focus {
     outline: none;
     background: #fff9f3;
     border-color: #8b6f47;
     transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(139, 111, 71, 0.2);
+    box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
 }
 
-#price input::placeholder {
+#price input[type="number"]::placeholder {
     color: #b89968;
+}
+
+/* Price Range Slider Styles */
+.price-slider-container {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 2px solid #e8d5c4;
+}
+
+.price-values {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #6b5540;
+}
+
+.slider-wrapper {
+    position: relative;
+    height: 6px;
+    background: linear-gradient(to right, #e8d5c4, #d4a574);
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.slider-track {
+    position: absolute;
+    height: 100%;
+    background: linear-gradient(to right, #d4a574, #8b6f47);
+    border-radius: 10px;
+}
+
+input[type="range"] {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    background: transparent;
+    pointer-events: none;
+    -webkit-appearance: none;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #fff;
+    border: 4px solid #8b6f47;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #fff;
+    border: 4px solid #8b6f47;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
 #randomize {
@@ -157,7 +256,7 @@ header img:hover {
     border: 4px solid #8b6f47;
     border-radius: 20px;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(139, 111, 71, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -168,12 +267,12 @@ header img:hover {
 #randomize:hover {
     background: linear-gradient(135deg, #c49563 0%, #a88857 100%);
     transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(139, 111, 71, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
 #randomize:active {
     transform: translateY(1px);
-    box-shadow: 0 5px 15px rgba(139, 111, 71, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
 #product-container {
@@ -191,14 +290,14 @@ header img:hover {
     border: 5px solid #8b6f47;
     border-radius: 25px;
     padding: 25px;
-    box-shadow: 0 10px 30px rgba(139, 111, 71, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
 .product:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 50px rgba(139, 111, 71, 0.35);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     border-color: #d4a574;
 }
 
@@ -271,7 +370,7 @@ header img:hover {
     border-radius: 12px;
     margin-bottom: 15px;
     font-size: 17px;
-    box-shadow: 0 4px 12px rgba(139, 111, 71, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     color: #6b5540;
 }
 
@@ -284,7 +383,7 @@ header img:hover {
     margin-bottom: 15px;
     margin-left: 10px;
     font-size: 14px;
-    box-shadow: 0 3px 10px rgba(139, 111, 71, 0.15);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     color: #8b6f47;
 }
 
@@ -310,7 +409,7 @@ header img:hover {
     background: rgba(255, 255, 255, 0.95);
     border: 4px solid #d4a574;
     border-radius: 50%;
-    box-shadow: 0 3px 8px rgba(139, 111, 71, 0.2);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .product::after {
@@ -323,7 +422,7 @@ header img:hover {
     background: rgba(255, 255, 255, 0.95);
     border: 4px solid #d4a574;
     border-radius: 50%;
-    box-shadow: 0 2px 6px rgba(139, 111, 71, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* Smooth transitions for all interactive elements */
@@ -339,7 +438,7 @@ header img:hover {
     }
     
     header img {
-        height: 300px;
+        max-height: 400px;
     }
     
     #randomize {
@@ -349,5 +448,15 @@ header img:hover {
     
     .slider {
         height: 200px;
+    }
+    
+    #price input[type="number"] {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    #price input[type="number"]:first-of-type {
+        margin-right: 0;
     }
 }

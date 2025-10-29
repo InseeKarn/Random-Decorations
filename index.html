@@ -22,9 +22,16 @@
     <div id="filter">
         <h5>Filters</h5>
         <div id="price">
-            <p id="filter-price">Price</p>
-            <input type="number" id="min-price" placeholder="Min Price">
-            <input type="number" id="max-price" placeholder="Max Price">
+        <div class="price-slider-container">
+            <div class="price-values">
+                <span>$<span id="min-value">0</span></span>
+                <span>$<span id="max-value">100</span></span>
+            </div>
+            <div class="slider-wrapper">
+                <div class="slider-track" id="slider-track"></div>
+                <input type="range" id="range-min" min="0" max="100" value="0" step="1">
+                <input type="range" id="range-max" min="0" max="100" value="100" step="1">
+            </div>
         </div>
     </div>
 
