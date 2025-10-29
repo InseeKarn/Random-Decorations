@@ -1,12 +1,5 @@
 const btn_random = document.getElementById('randomize');
 
-const product = [
-    { name: "โคมไฟวินเทจ", price: "$25", images: ["lamp1.jpg", "lamp2.jpg", "lamp3.jpg"], description: "โคมไฟตกแต่งบ้านสไตล์วินเทจ", link: "#" },
-    { name: "โต๊ะข้างเตียง", price: "$45", images: ["table.jpg", "table.jpg", "table.jpg"], description: "โต๊ะข้างเตียงไม้สวย", link: "#" },
-    { name: "เก้าอี้โมเดิร์น", price: "$60", images: ["chair.jpg", "chair.jpg", "chair.jpg"], description: "เก้าอี้โมเดิร์นสำหรับห้องนั่งเล่น", link: "#" },
-    { name: "ชั้นวางของ", price: "$35", images: ["shelf.jpg", "shelf.jpg", "shelf.jpg"], description: "ชั้นวางของไม้สีอ่อน", link: "#" }
-];
-
 const ImgSlides = [
   {
     image: "https://i.pinimg.com/1200x/10/1e/ca/101ecada1c213b0e1c79e9575123c7ad.jpg",
@@ -40,13 +33,24 @@ const ImgSlides = [
   },
 ]; 
 
-function displayRandomProducts(num = 3) {
+async function getProducts() {
+  try {
+    const response = await fetch('/api/products');
+    const data = await response.json();
+    console.log(data);
+
+    displayRandomProducts(3, data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function displayRandomProducts(num = 3, data = []) {
     const container = document.getElementById('product-container');
 
     container.innerHTML = "";
 
-    const shuffled = product.sort(() => 0.5 - Math.random());
-
+    const shuffled = data.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, num);
 
     selected.forEach((product, index) => {
@@ -91,12 +95,8 @@ function displayRandomProducts(num = 3) {
     });
 }
 
-displayRandomProducts(3);
-
-btn_random.addEventListener('click', () => {
-    displayRandomProducts(3);
-})
-
+btn_random.addEventListener('click', getProducts);
+getProducts();
 
 let ImgCurrentIndex = 0;
 
@@ -118,44 +118,3 @@ changeSlide();
 
 
 setInterval(changeSlide, 5000);
-
-
-
-// Price Slider Functionality
-const rangeMin = document.getElementById('range-min');
-const rangeMax = document.getElementById('range-max');
-const minValue = document.getElementById('min-value');
-const maxValue = document.getElementById('max-value');
-const sliderTrack = document.getElementById('slider-track');
-const minPriceInput = document.getElementById('min-price');
-const maxPriceInput = document.getElementById('max-price');
-
-function updateSlider() {
-    let min = parseInt(rangeMin.value);
-    let max = parseInt(rangeMax.value);
-    
-    if (max - min < 5) {
-        if (this.id === 'range-min') {
-            rangeMin.value = max - 5;
-            min = max - 5;
-        } else {
-            rangeMax.value = min + 5;
-            max = min + 5;
-        }
-    }
-    
-    minValue.textContent = min;
-    maxValue.textContent = max;
-    minPriceInput.value = min;
-    maxPriceInput.value = max;
-    
-    const percent1 = (min / rangeMin.max) * 100;
-    const percent2 = (max / rangeMax.max) * 100;
-    sliderTrack.style.left = percent1 + '%';
-    sliderTrack.style.width = (percent2 - percent1) + '%';
-}
-
-rangeMin.addEventListener('input', updateSlider);
-rangeMax.addEventListener('input', updateSlider);
-
-updateSlider();
