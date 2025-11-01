@@ -100,47 +100,80 @@ const fallbackProducts = [
 
 function generateSign(params, appSecret) {
 
-  const sortedKeys = Object.keys(params).sort();
-  let baseString = appSecret;
-  for (const key of sortedKeys) {
-    baseString += key + params[key];
-  }
-  baseString += appSecret;
+    const sortedKeys = Object.keys(params).sort();
+    let baseString = appSecret;
+    for (const key of sortedKeys) {
+        baseString += key + params[key];
+    }
+    baseString += appSecret;
 
-  return crypto.createHash('md5').update(baseString).digest('hex').toUpperCase();
+    return crypto.createHash('md5').update(baseString).digest('hex').toUpperCase();
 }
 
 app.get('/api/products', async (req, res) => {
-  const keyword = req.query.keyword || 'decorations';
-  const appKey = process.env.ALIEXPRESS_APP_KEY;
-  const appSecret = process.env.ALIEXPRESS_APP_SECRET;
+    const keywords = [
+        'home decor',
+        'wall art',
+        'decorative lights',
+        'throw pillows',
+        'vases',
+        'wall clock',
+        'table lamp',
+        'photo frames',
+        'candle holders',
+        'artificial flowers',
+        'wall mirror',
+        'rugs carpets',
+        'curtains',
+        'decorative boxes',
+        'planters',
+        'bookends',
+        'coasters',
+        'figurines',
+        'wreaths',
+        'wall shelves',
+        'decorative trays',
+        'tissue box',
+        'ceramic ornaments',
+        'string lights',
+        'macrame',
+        'tapestry',
+        'sculptures',
+        'wind chimes',
+        'door mats',
+        'table runners'
+    ];
+    const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+    const randomPage = Math.floor(Math.random() * 20) + 1;
+    const appKey = process.env.ALIEXPRESS_APP_KEY;
+    const appSecret = process.env.ALIEXPRESS_APP_SECRET;
 
-  const params = {
-    method: 'aliexpress.affiliate.product.query',
-    app_key: appKey,
-    timestamp: new Date().toISOString(),
-    sign_method: 'md5',
-    page_no: 1,
-    page_size: 20,
-    keywords: keyword
-  };
+    const params = {
+        method: 'aliexpress.affiliate.product.query',
+        app_key: appKey,
+        timestamp: new Date().toISOString(),
+        sign_method: 'md5',
+        page_no: randomPage,
+        page_size: 20,
+        keywords: randomKeyword
+    };
 
-  params.sign = generateSign(params, appSecret);
+    params.sign = generateSign(params, appSecret);
 
-  try {
-    const url = 'https://api-sg.aliexpress.com/sync';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-      body: new URLSearchParams(params)
-    });
+    try {
+        const url = 'https://api-sg.aliexpress.com/sync';
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+            body: new URLSearchParams(params)
+        });
 
-    const data = await response.json();
-    res.json(data.products || data.items || data.data || data);
-  } catch (err) {
-    console.error(err);
-    res.json(fallbackProducts);
-  }
+        const data = await response.json();
+        res.json(data.products || data.items || data.data || data);
+    } catch (err) {
+        console.error(err);
+        res.json(fallbackProducts);
+    }
 });
 
 
