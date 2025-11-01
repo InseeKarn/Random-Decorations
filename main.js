@@ -82,7 +82,7 @@ function displayRandomProducts(num = 3, data = []) {
         `;
 
         productDiv.innerHTML = `
-            <h3>${product.product_title}</h3>
+            <h4>${product.product_title}</h4>
             ${sliderHTML}
             <h5>Price: $${product.app_sale_price}</h5>
             <a href="${product.product_detail_url}" target="_blank">Buy Now</a>

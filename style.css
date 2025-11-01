@@ -307,8 +307,8 @@ input[type="range"]::-moz-range-thumb:hover {
     border-color: #d4a574;
 }
 
-.product h3 {
-    font-size: 26px;
+.product h4 {
+    font-size: 20px;
     margin-bottom: 20px;
     color: #6b5540;
     text-align: center;
