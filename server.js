@@ -121,7 +121,7 @@ app.get('/api/products', async (req, res) => {
     timestamp: new Date().toISOString(),
     sign_method: 'md5',
     page_no: 1,
-    page_size: 10,
+    page_size: 100,
     keywords: keyword
   };
 

@@ -33,6 +33,10 @@ const ImgSlides = [
     },
 ];
 
+
+let displayedProductsHistory = [];
+let allProducts = [];
+
 async function getProducts() {
     try {
         const response = await fetch('/api/products');
@@ -44,35 +48,62 @@ async function getProducts() {
         if (data.aliexpress_affiliate_product_query_response?.resp_result?.result?.products?.product) {
             productsArray = data.aliexpress_affiliate_product_query_response.resp_result.result.products.product;
         } else if (Array.isArray(data)) {
-            productsArray = data; // fallback
+            productsArray = data;
         } else {
             productsArray = [];
         }
 
-        displayRandomProducts(3, productsArray);
+        allProducts = productsArray;
+        displayRandomProducts(3);
 
     } catch (err) {
         console.error(err);
     }
 }
 
-function displayRandomProducts(num = 3, data = []) {
-    if (!Array.isArray(data)) {
-        console.error("data is not an array", data);
+function displayRandomProducts(num = 3) {
+    if (!Array.isArray(allProducts) || allProducts.length === 0) {
+        console.error("No products available");
         return;
     }
 
     const container = document.getElementById('product-container');
     container.innerHTML = "";
 
-    const shuffled = data.sort(() => 0.5 - Math.random());
+
+    let availableProducts = allProducts.filter(product => {
+        const productId = product.product_id || product.product_title;
+        return !displayedProductsHistory.includes(productId);
+    });
+
+
+    if (availableProducts.length < num) {
+        console.log("Resetting product history - not enough unique products");
+        displayedProductsHistory = [];
+        availableProducts = [...allProducts];
+    }
+
+
+    const shuffled = availableProducts.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, num);
+
+
+    selected.forEach(product => {
+        const productId = product.product_id || product.product_title;
+        displayedProductsHistory.push(productId);
+    });
+
+    if (displayedProductsHistory.length > num * 5) {
+        displayedProductsHistory = displayedProductsHistory.slice(num);
+    }
+
+    console.log(`Displayed products history: ${displayedProductsHistory.length} items`);
+
 
     selected.forEach((product, index) => {
         const productDiv = document.createElement("div");
         productDiv.classList.add("product");
 
-        // slider
         const sliderHTML = `
             <div class="slider" id="slider-${index}">
                 <button class="prev">&#10094;</button>
@@ -92,28 +123,32 @@ function displayRandomProducts(num = 3, data = []) {
 
         let currentIndex = 0;
         const slider = productDiv.querySelector(`#slider-${index} img`);
-        const prevBtn = productDiv.querySelector(".prev")
-        const nextBtn = productDiv.querySelector(".next")
+        const prevBtn = productDiv.querySelector(".prev");
+        const nextBtn = productDiv.querySelector(".next");
 
-        if (product.images && product.images.length > 0) {
+        const images = product.product_small_image_urls?.string || [];
+
+        if (images && images.length > 1) {
             prevBtn.addEventListener("click", () => {
-                currentIndex = (currentIndex - 1 + product.images.length) % product.images.length;
-                slider.src = product.images[currentIndex];
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                slider.src = images[currentIndex];
             });
 
             nextBtn.addEventListener("click", () => {
-                currentIndex = (currentIndex + 1) % product.images.length;
-                slider.src = product.images[currentIndex];
+                currentIndex = (currentIndex + 1) % images.length;
+                slider.src = images[currentIndex];
             });
         } else {
             prevBtn.style.display = "none";
             nextBtn.style.display = "none";
         }
-
     });
 }
 
-btn_random.addEventListener('click', getProducts);
+btn_random.addEventListener('click', () => {
+    displayRandomProducts(3);
+});
+
 getProducts();
 
 let ImgCurrentIndex = 0;
@@ -132,8 +167,5 @@ function changeSlide() {
     ImgCurrentIndex = (ImgCurrentIndex + 1) % ImgSlides.length;
 }
 
-
 changeSlide();
-
-
 setInterval(changeSlide, 5000);
