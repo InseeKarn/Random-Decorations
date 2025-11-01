@@ -33,15 +33,45 @@ const ImgSlides = [
     },
 ];
 
-
 let displayedProductsHistory = [];
-let allProducts = [];
+let usedPages = []; // เก็บหน้าที่ใช้ไปแล้ว
+const totalPages = 10; // จำนวนหน้าทั้งหมดที่มีใน API
+
+function getRandomPage() {
+    // ถ้าใช้หน้าครบทุกหน้าแล้ว ให้ reset
+    if (usedPages.length >= totalPages) {
+        console.log("Reset used pages - all pages have been used");
+        usedPages = [];
+    }
+
+    // หาหน้าที่ยังไม่เคยใช้
+    let availablePages = [];
+    for (let i = 1; i <= totalPages; i++) {
+        if (!usedPages.includes(i)) {
+            availablePages.push(i);
+        }
+    }
+
+    // สุ่มหน้าจากหน้าที่ยังไม่เคยใช้
+    const randomIndex = Math.floor(Math.random() * availablePages.length);
+    const selectedPage = availablePages[randomIndex];
+    
+    // บันทึกหน้าที่ใช้ไปแล้ว
+    usedPages.push(selectedPage);
+    
+    console.log(`Selected page: ${selectedPage}, Used pages: ${usedPages.join(', ')}`);
+    
+    return selectedPage;
+}
 
 async function getProducts() {
     try {
-        const response = await fetch('/api/products');
+        // สุ่มหน้าแบบ random
+        const randomPage = getRandomPage();
+        
+        const response = await fetch(`/api/products?page=${randomPage}`);
         const data = await response.json();
-        console.log(data);
+        console.log(`API Response from page ${randomPage}:`, data);
 
         let productsArray = [];
 
@@ -53,53 +83,62 @@ async function getProducts() {
             productsArray = [];
         }
 
-        allProducts = productsArray;
-        displayRandomProducts(3);
+        console.log(`Fetched ${productsArray.length} products from random page ${randomPage}`);
+        
+        return productsArray;
 
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching products:', err);
+        return [];
     }
 }
 
-function displayRandomProducts(num = 3) {
+async function displayRandomProducts(num = 3) {
+    const container = document.getElementById('product-container');
+    container.innerHTML = '<p style="text-align: center; color: #fff; font-size: 20px;">Loading...</p>';
+
+    // ดึงสินค้าใหม่จาก API (จากหน้าที่สุ่ม)
+    const allProducts = await getProducts();
+
     if (!Array.isArray(allProducts) || allProducts.length === 0) {
         console.error("No products available");
+        container.innerHTML = '<p style="text-align: center; color: #fff; font-size: 20px;">No products found</p>';
         return;
     }
 
-    const container = document.getElementById('product-container');
     container.innerHTML = "";
 
-
+    // กรองสินค้าที่ยังไม่เคยแสดง
     let availableProducts = allProducts.filter(product => {
         const productId = product.product_id || product.product_title;
         return !displayedProductsHistory.includes(productId);
     });
 
-
+    // ถ้าสินค้าที่เหลือน้อยกว่า 3 ชิ้น ให้ใช้สินค้าทั้งหมด
     if (availableProducts.length < num) {
-        console.log("Resetting product history - not enough unique products");
-        displayedProductsHistory = [];
+        console.log("Not enough unique products in this batch, using all available");
         availableProducts = [...allProducts];
+        // ไม่ต้อง reset ประวัติเพราะเราดึงจากหน้าใหม่อยู่แล้ว
     }
 
-
+    // สุ่มสินค้า
     const shuffled = availableProducts.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, num);
 
-
+    // บันทึกสินค้าที่แสดงลงในประวัติ
     selected.forEach(product => {
         const productId = product.product_id || product.product_title;
         displayedProductsHistory.push(productId);
     });
 
-    if (displayedProductsHistory.length > num * 5) {
-        displayedProductsHistory = displayedProductsHistory.slice(num);
+    // จำกัดประวัติไว้แค่ 50 ชิ้นล่าสุด เพื่อไม่ให้เยอะเกินไป
+    if (displayedProductsHistory.length > 50) {
+        displayedProductsHistory = displayedProductsHistory.slice(-50);
     }
 
-    console.log(`Displayed products history: ${displayedProductsHistory.length} items`);
+    console.log(`Total products in history: ${displayedProductsHistory.length} items`);
 
-
+    // แสดงสินค้า
     selected.forEach((product, index) => {
         const productDiv = document.createElement("div");
         productDiv.classList.add("product");
@@ -145,11 +184,12 @@ function displayRandomProducts(num = 3) {
     });
 }
 
-btn_random.addEventListener('click', () => {
-    displayRandomProducts(3);
+btn_random.addEventListener('click', async () => {
+    await displayRandomProducts(3);
 });
 
-getProducts();
+// โหลดสินค้าครั้งแรก
+displayRandomProducts(3);
 
 let ImgCurrentIndex = 0;
 

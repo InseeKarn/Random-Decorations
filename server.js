@@ -111,7 +111,7 @@ function generateSign(params, appSecret) {
 }
 
 app.get('/api/products', async (req, res) => {
-  const keyword = req.query.keyword || 'home decor';
+  const keyword = req.query.keyword || 'decorations';
   const appKey = process.env.ALIEXPRESS_APP_KEY;
   const appSecret = process.env.ALIEXPRESS_APP_SECRET;
 
@@ -121,7 +121,7 @@ app.get('/api/products', async (req, res) => {
     timestamp: new Date().toISOString(),
     sign_method: 'md5',
     page_no: 1,
-    page_size: 100,
+    page_size: 20,
     keywords: keyword
   };
 
